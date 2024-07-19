@@ -11,6 +11,12 @@
 
     @vite('resources/js/app.js')
 
+    @production
+        <!-- Fathom - beautiful, simple website analytics -->
+        <script src="https://cdn.usefathom.com/script.js" data-site="{{ config('services.fathom.site ID') }}" defer></script>
+        <!-- / Fathom -->
+    @endproduction
+
 </head>
 
 <body class="h-full font-sans antialiased xl:overscroll-none w-full text-gray-100">
