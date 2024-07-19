@@ -1,6 +1,6 @@
 <template>
-    <div class="flex space-y-8 flex-col m-0">
-        <div class="w-full p-6 m-0 min-h-52 sm:rounded-b max-h-80 overflow-y-auto border-x-4 border-rose-500 bg-rose-500/5 select-none cursor-pointer tracking-wide" ref="display" @wheel="adjustSpeed" @wheel.ctrl.exact="adjustSize" @click="() => isScrolling ? stopScrolling(false) : startScrolling()">
+    <div class="flex space-y-8 flex-col m-0 justify-center items-center">
+        <div class="w-3/4 p-6 m-0 min-h-52 sm:rounded-b max-h-80 overflow-y-auto border-x-4 border-rose-500 bg-rose-500/5 select-none cursor-pointer tracking-wide" ref="display" @wheel="adjustSpeed" @wheel.ctrl.exact="adjustSize" @click="() => isScrolling ? stopScrolling(false) : startScrolling()">
             <div v-html="compiledMarkdown" :class="['prose prose-slate prose-invert max-w-none text-center w-full pb-62', sizes[currentSize]]"></div>
         </div>
 
@@ -9,7 +9,7 @@
             <p class="text-slate-500">Click the prompter to start/pause scrolling. Use your scroll wheel to jump back and forth. Hold <kbd class="rounded border bg-rose-500/10 border-rose-500/30 px-1.5 py-0.5 text-sm leading-5 text-rose-500 font-sans font-normal">Ctrl</kbd> whilst you scroll vertically to change the font size. Scroll horizontally to adjust the speed. </p>
         </div>
 
-        <div class="relative">
+        <div class="relative w-full">
             <textarea v-model="markdownText" @keyup="debouncedSave" placeholder="Write some markdown" class="block sm:rounded border-0 w-full bg-slate-900 py-1.5 text-slate-100 ring-1 sm:ring-offset-2 ring-offset-slate-900 ring-rose-500 placeholder:text-slate-500 focus:ring-2 focus:ring-offset-0 focus:ring-rose-600 sm:leading-6" rows="9"></textarea>
             <div>
                 <transition
@@ -25,7 +25,7 @@
             </div>
         </div>
 
-        <div class="flex space-x-4 items-center justify-center">
+        <div class="flex space-x-4 items-center justify-center w-full">
             <button type="button" class="inline-flex items-center gap-x-2 rounded bg-rose-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-rose-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-rose-600"
                     v-if="!isScrolling"
             @click="startScrolling">
@@ -46,7 +46,7 @@
             </template>
         </div>
 
-        <div class="flex items-center justify-evenly space-x-4">
+        <div class="flex items-center justify-evenly space-x-4 w-full">
             <div>
                 <label for="email" class="block text-sm font-medium leading-6 text-slate-400">Scroll Speed:</label>
                 <div class="mt-2">
