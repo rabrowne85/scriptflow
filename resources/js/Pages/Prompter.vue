@@ -1,7 +1,8 @@
 <template>
     <div class="flex space-y-8 flex-col m-0 justify-center items-center">
-        <div class="w-3/4 p-6 m-0 min-h-52 sm:rounded-b max-h-80 overflow-y-auto border-x-4 border-rose-500 bg-rose-500/5 select-none cursor-pointer tracking-wide" ref="display" @wheel="adjustSpeed" @wheel.ctrl.exact="adjustSize" @click="() => isScrolling ? stopScrolling(false) : startScrolling()">
-            <div v-html="compiledMarkdown" :class="['prose prose-slate prose-invert max-w-none text-center w-full pb-62', sizes[currentSize]]"></div>
+        <div class="w-3/4 p-6 m-0 min-h-52 sm:rounded-b max-h-80 overflow-y-auto border-x-4 border-rose-500 bg-rose-500/5 select-none cursor-pointer tracking-wide" ref="display" @wheel="adjustSpeed" @wheel.ctrl.exact="adjustSize" @click="(e) => isScrolling ? stopScrolling(false) : startScrolling(e)">
+            <div v-html="compiledMarkdown" :class="['prose prose-slate prose-invert max-w-none text-center w-full prose-p:!my-4 h-full', sizes[currentSize]]"></div>
+            <div class="h-64">&nbsp;</div>
         </div>
 
         <div class="flex items-center px-4 space-x-4 text-sm font-medium select-none">
@@ -66,6 +67,7 @@
 <script setup>
 import {computed, onMounted, ref, watch} from 'vue';
 import {marked} from 'marked'; // Assuming 'marked' is installed for markdown parsing
+import DOMPurify from 'dompurify';
 import { PlayIcon, StopIcon, PauseIcon, LightBulbIcon, SparklesIcon } from '@heroicons/vue/24/solid'
 
 const markdownText = ref('');
@@ -76,8 +78,9 @@ const currentSize = ref(4);
 const prevX = ref(400);
 const saved = ref(false);
 let scrollInterval = null;
+let timeout = null;
 
-const compiledMarkdown = computed(() => marked.parse(markdownText.value));
+const compiledMarkdown = computed(() => DOMPurify.sanitize(marked.parse(markdownText.value)));
 
 const sizes = [
     'prose-sm',
@@ -87,7 +90,7 @@ const sizes = [
     'prose-2xl',
 ];
 
-const startScrolling = () => {
+const startScrolling = (e) => {
     if (scrollInterval) clearTimeout(scrollInterval);
     const displayElement = display.value;
     scrollInterval = setTimeout(() => {
@@ -97,6 +100,7 @@ const startScrolling = () => {
             startScrolling();
         } else {
             clearTimeout(scrollInterval); // Stop scrolling when end is reached
+            scrollInterval = null;
             isScrolling.value = false;
         }
     }, Math.floor(100/scrollSpeed.value) ); // Adjust the interval for smoother or faster scrolling
@@ -110,6 +114,7 @@ const stopScrolling = (reset = false) => {
         displayElement.scrollTop = 0;
     }
     isScrolling.value = false;
+    scrollInterval = null;
 }
 
 const adjustSpeed = (event) => {
@@ -156,7 +161,6 @@ const debounce = (func, wait) => {
 const saveMarkdown = () => {
     localStorage.setItem('promptly.markdown', markdownText.value);
     saved.value = true;
-    let timeout;
 
     clearTimeout(timeout);
     timeout = setTimeout(() => { saved.value = false;}, 500);
