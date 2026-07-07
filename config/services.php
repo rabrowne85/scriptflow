@@ -36,7 +36,7 @@ return [
     ],
 
     'fathom' => [
-        'site ID' => env('FATHOM_SITE_ID'),
+        'site_id' => env('FATHOM_SITE_ID'),
     ],
 
 ];
